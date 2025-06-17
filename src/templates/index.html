@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earthquake Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Earthquake Prediction Map</h1>
+        <div id="map"></div>
+        <div class="slider-container">
+            <label for="date-slider">Select Date Horizon:</label>
+            <input type="range" id="date-slider" name="slider_date_horizon" min="0" max="30" value="7">
+            <span id="slider-value">7</span> days
+        </div>
+        <button id="predict-button">Predict Earthquakes</button>
+        <div id="earthquake-info">
+            <h2>Predicted Earthquakes</h2>
+            <div id="predictions"></div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('date-slider').oninput = function() {
+            document.getElementById('slider-value').innerText = this.value;
+        };
+
+        document.getElementById('predict-button').onclick = function() {
+            const horizon = document.getElementById('date-slider').value;
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `slider_date_horizon=${horizon}`
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('predictions').innerHTML = data;
+                // Call a function to update the map with new predictions
+                updateMap();
+            });
+        };
+
+        function updateMap() {
+            // Logic to update the Google Map with new predictions
+        }
+    </script>
+</body>
+</html>
